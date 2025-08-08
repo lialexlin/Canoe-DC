@@ -66,23 +66,45 @@ class CanoeClient:
         """Download a specific PDF"""
         response = requests.get(
             f'{self.base_url}/v1/documents/{document_id}',
-            headers=self.headers
+            headers=self.headers,
+            timeout=60
         )
         response.raise_for_status()
         return response.content
     
-    def process_specific_document(self, document_id=None):
-        """Process a specific document or use default test document"""
+    def process_specific_document(self, document_id: str | None = None):
         if document_id is None:
-            # Default test document ID - can be configured via environment variable
-            document_id = "9b5f2bf5-99ca-4718-8b89-3c6dc4a2711c"
-        
-        logger.info(f"📄 Processing specific document: {document_id}")
-        
-        # Download PDF
+            # Default test document ID – can also be moved to an env-var
+            document_id = "363bdcb7-b5db-4074-a88f-47d1e73ec44c"
+
+        logger.info(f"📄 Processing document: {document_id}")
+
+        # ── Get document metadata with original filename ──────────────────────
+        meta_resp = requests.get(
+            f"{self.base_url}/v1/documents/data",
+            headers=self.headers,
+            params={
+                "id": document_id,
+                "fields": "id,name",
+                "file_name_type": "original_file_name"
+            },
+            timeout=60
+        )
+        meta_resp.raise_for_status()
+        documents = meta_resp.json()
+
+        if not documents:
+            raise ValueError(f"Document {document_id} not found")
+
+        document = documents[0]
+        original_name = document.get("name", "Unknown_File_Name.pdf")
+
+        # ── Download the PDF ──────────────────────────────────────────────────
         pdf_data = self.download_pdf(document_id)
-        
-        # Create document info for compatibility
-        doc_info = {"id": document_id, "name": "Specific Document"}
-        
+
+        doc_info = {
+            "id": document_id,
+            "name": original_name,
+        }
+
         return pdf_data, doc_info
