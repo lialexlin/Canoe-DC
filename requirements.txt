@@ -3,4 +3,5 @@ anthropic>=0.3.0
 loguru>=0.7.0
 python-dotenv>=1.0.0
 notion-client>=2.0.0
+pymupdf>=1.23.0
 pypdf2>=3.0.0

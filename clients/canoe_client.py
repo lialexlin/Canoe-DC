@@ -70,3 +70,19 @@ class CanoeClient:
         )
         response.raise_for_status()
         return response.content
+    
+    def process_specific_document(self, document_id=None):
+        """Process a specific document or use default test document"""
+        if document_id is None:
+            # Default test document ID - can be configured via environment variable
+            document_id = "9b5f2bf5-99ca-4718-8b89-3c6dc4a2711c"
+        
+        logger.info(f"📄 Processing specific document: {document_id}")
+        
+        # Download PDF
+        pdf_data = self.download_pdf(document_id)
+        
+        # Create document info for compatibility
+        doc_info = {"id": document_id, "name": "Specific Document"}
+        
+        return pdf_data, doc_info
