@@ -1,4 +1,4 @@
-# Canoe to DC workflow
+# Canoe to Notion workflow
 
 Automatically downloads PDFs from Canoe, summarizes them with Claude AI, and saves summaries to Notion.
 
