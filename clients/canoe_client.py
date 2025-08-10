@@ -73,31 +73,15 @@ class CanoeClient:
         response.raise_for_status()
         return response.json()
     
-    def download_pdf(self, document_id):
-        """Download a specific PDF"""
-        response = requests.get(
-            f'{self.base_url}/v1/documents/{document_id}',
-            headers=self.headers,
-            timeout=60
-        )
-        response.raise_for_status()
-        return response.content
-    
-    def process_specific_document(self, document_id: str | None = None):
-        if document_id is None:
-            # Default test document ID – can also be moved to an env-var
-            document_id = "363bdcb7-b5db-4074-a88f-47d1e73ec44c"
-
-        logger.info(f"📄 Processing document: {document_id}")
-
-        # ── Get document metadata with original filename ──────────────────────
+    def download_document(self, document_id):
+        """Download PDF and get document name in one operation"""
+        # Get document metadata including original filename
         meta_resp = requests.get(
             f"{self.base_url}/v1/documents/data",
             headers=self.headers,
             params={
                 "id": document_id,
-                "fields": "id,name",
-                "file_name_type": "original_file_name"
+                "fields": "id,name,original_file_name"
             },
             timeout=60
         )
@@ -108,14 +92,25 @@ class CanoeClient:
             raise ValueError(f"Document {document_id} not found")
 
         document = documents[0]
-        original_name = document.get("name", "Unknown_File_Name.pdf")
+        pdf_name = document.get('original_file_name', f"Document_{document_id}.pdf")
 
-        # ── Download the PDF ──────────────────────────────────────────────────
-        pdf_data = self.download_pdf(document_id)
+        # Download PDF
+        pdf_resp = requests.get(
+            f'{self.base_url}/v1/documents/{document_id}',
+            headers=self.headers,
+            timeout=60
+        )
+        pdf_resp.raise_for_status()
+        pdf_data = pdf_resp.content
 
-        doc_info = {
-            "id": document_id,
-            "name": original_name,
-        }
-
-        return pdf_data, doc_info
+        return pdf_data, pdf_name
+    
+    def download_pdf(self, document_id):
+        """Download a specific PDF (for quarterly reports that already have names)"""
+        response = requests.get(
+            f'{self.base_url}/v1/documents/{document_id}',
+            headers=self.headers,
+            timeout=60
+        )
+        response.raise_for_status()
+        return response.content
