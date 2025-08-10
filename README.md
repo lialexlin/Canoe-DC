@@ -1,65 +1,234 @@
-# Canoe to Notion workflow
+# Canoe to Notion Workflow
 
 Automatically downloads PDFs from Canoe, summarizes them with Claude AI, and saves summaries to Notion.
 
 ## Features
 
-- 🔐 Secure OAuth authentication with Canoe API
-- 🤖 Intelligent PDF summarization using Claude AI
-- 📝 Automatic Notion page creation with summaries
-- 📋 Structured logging with timestamps
-- ⚙️ Configurable processing settings
+- 🔐 **Secure credential management** with 1Password CLI integration
+- 🤖 **Intelligent PDF summarization** using Claude AI
+- 📝 **Automatic Notion page creation** with summaries
+- 🐳 **Cross-device compatibility** with dev containers & Docker
+- 📋 **Structured logging** with timestamps
+- ⚙️ **Configurable processing** settings
 
-## Setup
+## Quick Start Options
 
-### 1. Clone the repository
+### Option 1: Dev Container (Recommended for Development)
+
+**Prerequisites:**
+- Docker Desktop
+- VS Code with Dev Containers extension
+- 1Password CLI account
+
+1. **Clone and open in VS Code:**
+   ```bash
+   git clone <your-repo-url>
+   cd Canoe-DC
+   code .
+   ```
+
+2. **Open in Dev Container:**
+   - VS Code will prompt to "Reopen in Container"
+   - Or use Command Palette: `Dev Containers: Reopen in Container`
+
+3. **Set up 1Password:**
+   ```bash
+   # Sign in to 1Password CLI
+   op signin
+   
+   # Verify connection
+   op account list
+   ```
+
+4. **Run the application:**
+   ```bash
+   python main.py
+   ```
+
+### Option 2: Docker Compose
+
+**For production or simple deployment:**
+
 ```bash
-git clone <your-repo-url>
-cd Canoe-DC
+# Build and run
+docker-compose --profile prod up --build
+
+# For development with live reload
+docker-compose --profile dev up --build
 ```
 
-### 2. Install dependencies
-```bash
-pip install -r requirements.txt
-```
+### Option 3: Local Development
 
-### 3. Configure environment variables
+**If you prefer local setup:**
+
+1. **Install dependencies:**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+2. **Install 1Password CLI:**
+   - **macOS:** `brew install 1password-cli`
+   - **Linux:** See [1Password CLI installation guide](https://developer.1password.com/docs/cli/get-started)
+   - **Windows:** Download from [1Password CLI releases](https://app-updates.agilebits.com/product_history/CLI2)
+
+3. **Sign in to 1Password:**
+   ```bash
+   op signin
+   ```
+
+## 1Password Setup
+
+Create these items in your 1Password vault:
+
+### 1. Canoe API Credentials
+- **Item name:** `canoe-api`
+- **Fields:**
+  - `client_id` (your Canoe client ID)
+  - `client_secret` (your Canoe client secret)
+  - `base_url` (usually `https://api.canoesoftware.com`)
+
+### 2. Anthropic API
+- **Item name:** `anthropic-api`
+- **Fields:**
+  - `api_key` (your Anthropic API key from https://console.anthropic.com/)
+
+### 3. Notion Integration
+- **Item name:** `notion-integration`
+- **Fields:**
+  - `token` (your Notion integration token)
+  - `database_id` (your Notion database ID)
+
+### Setup Instructions:
+
+1. **Create Notion Integration:**
+   - Go to https://www.notion.so/my-integrations
+   - Create a new integration
+   - Copy the token
+
+2. **Create Notion Database:**
+   - Create a database with a "Title" property
+   - Share the database with your integration
+   - Copy the database ID from the URL
+
+3. **Add to 1Password:**
+   ```bash
+   # Example: Create Canoe API item
+   op item create \
+     --category="API Credential" \
+     --title="canoe-api" \
+     --vault="Personal" \
+     client_id="your_client_id" \
+     client_secret="your_client_secret" \
+     base_url="https://api.canoesoftware.com"
+   ```
+
+## Configuration
+
+### Environment Variables (Optional Fallback)
+
+If 1Password is unavailable, create a `.env` file:
+
 ```bash
 cp .env.example .env
 ```
 
-Edit `.env` with your API credentials:
+Edit `.env` with your credentials as fallback.
 
-- **Canoe API**: Get your client ID and secret from your Canoe dashboard
-- **Anthropic API**: Get your API key from https://console.anthropic.com/
-- **Notion Integration**: 
-  1. Create a new integration at https://www.notion.so/my-integrations
-  2. Create a database with a "Title" property
-  3. Share the database with your integration
-  4. Copy the database ID from the URL
-
-### 4. Run the application
-```bash
-python main.py
-```
-
-## Configuration
+### Application Settings
 
 Edit `config.py` to customize:
 - Document types to process
-- Summary length and style
+- Summary length and style  
 - Batch processing settings
 - File size limits
 
-## Security
+## Development
 
-- Never commit your `.env` file to version control
-- Use environment-specific API keys
-- Regularly rotate your API credentials
+### Code Formatting
+```bash
+# Format code
+black .
+
+# Lint code
+flake8 .
+
+# Run tests
+pytest
+```
+
+### Pre-commit Hooks
+```bash
+# Install hooks (done automatically in dev container)
+pre-commit install
+
+# Run manually
+pre-commit run --all-files
+```
+
+## Security Best Practices
+
+✅ **1Password CLI** for credential management  
+✅ **No secrets in code** or environment files  
+✅ **Container isolation** for consistent environments  
+✅ **Read-only mounts** for sensitive data  
+✅ **Non-root user** in containers  
+
+## Troubleshooting
+
+### 1Password Issues
+```bash
+# Check authentication
+op account list
+
+# Re-authenticate if needed
+op signin --force
+
+# Verify item access
+op item get canoe-api
+```
+
+### Container Issues
+```bash
+# Rebuild dev container
+# Command Palette: "Dev Containers: Rebuild Container"
+
+# Check Docker logs
+docker-compose logs pdf-summarizer
+```
+
+### Python Issues
+```bash
+# Check dependencies
+pip list
+
+# Reinstall requirements
+pip install -r requirements.txt --force-reinstall
+```
 
 ## Requirements
 
-- Python 3.7+
-- Valid API keys for Canoe, Anthropic, and Notion
-- Internet connection for API calls
+- **Python 3.11+**
+- **Docker** (for container usage)
+- **1Password CLI** and account
+- **Valid API keys** for Canoe, Anthropic, and Notion
+- **Internet connection** for API calls
 
+## Architecture
+
+```
+📁 Project Structure
+├── 📁 .devcontainer/          # Dev container configuration
+├── 📁 clients/                # API client classes
+│   ├── canoe_client.py        # Canoe API integration
+│   ├── claude_client.py       # Claude AI summarization
+│   └── notion_client.py       # Notion database storage
+├── 📁 utils/                  # Utility modules
+│   └── logger.py              # Logging configuration
+├── 📁 data/                   # Data storage (gitignored)
+├── 📁 logs/                   # Application logs
+├── config.py                  # Configuration with 1Password
+├── main.py                    # Main application entry point
+├── Dockerfile                 # Container image definition
+├── docker-compose.yml         # Multi-container orchestration
+└── requirements.txt           # Python dependencies
+```

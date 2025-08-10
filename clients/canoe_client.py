@@ -21,6 +21,11 @@ class CanoeClient:
         """Get access token using client credentials"""
         logger.info("🔑 Getting Canoe access token...")
         
+        # Debug logging
+        logger.debug(f"Base URL: {self.base_url}")
+        logger.debug(f"Client ID: {self.client_id[:8]}..." if self.client_id else "Client ID: None")
+        logger.debug(f"Client Secret: {'***' if self.client_secret else 'None'}")
+        
         data = {
             "grant_type": "client_credentials",
             "client_id": self.client_id,
@@ -32,6 +37,12 @@ class CanoeClient:
             data=data,
             headers={'Content-Type': 'application/x-www-form-urlencoded'}
         )
+        
+        # Debug response
+        logger.debug(f"Response status: {response.status_code}")
+        if response.status_code != 200:
+            logger.error(f"Response text: {response.text}")
+        
         response.raise_for_status()
         
         token_data = response.json()
