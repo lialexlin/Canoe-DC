@@ -7,45 +7,13 @@ Automatically downloads PDFs from Canoe, summarizes them with Claude AI, and sav
 - 🔐 **Secure credential management** with 1Password CLI integration
 - 🤖 **Intelligent PDF summarization** using Claude AI
 - 📝 **Automatic Notion page creation** with summaries
-- 🐳 **Cross-device compatibility** with dev containers & Docker
+- 🐳 **Cross-device compatibility** with Docker
 - 📋 **Structured logging** with timestamps
 - ⚙️ **Configurable processing** settings
 
 ## Quick Start Options
 
-### Option 1: Dev Container (Recommended for Development)
-
-**Prerequisites:**
-- Docker Desktop
-- VS Code with Dev Containers extension
-- 1Password CLI account
-
-1. **Clone and open in VS Code:**
-   ```bash
-   git clone <your-repo-url>
-   cd Canoe-DC
-   code .
-   ```
-
-2. **Open in Dev Container:**
-   - VS Code will prompt to "Reopen in Container"
-   - Or use Command Palette: `Dev Containers: Reopen in Container`
-
-3. **Set up 1Password:**
-   ```bash
-   # Sign in to 1Password CLI
-   op signin
-   
-   # Verify connection
-   op account list
-   ```
-
-4. **Run the application:**
-   ```bash
-   python main.py
-   ```
-
-### Option 2: Docker Compose
+### Option 1: Docker Compose
 
 **For production or simple deployment:**
 
@@ -57,7 +25,7 @@ docker-compose --profile prod up --build
 docker-compose --profile dev up --build
 ```
 
-### Option 3: Local Development
+### Option 2: Local Development
 
 **If you prefer local setup:**
 
@@ -158,7 +126,7 @@ pytest
 
 ### Pre-commit Hooks
 ```bash
-# Install hooks (done automatically in dev container)
+# Install hooks
 pre-commit install
 
 # Run manually
@@ -189,9 +157,6 @@ op item get canoe-api
 
 ### Container Issues
 ```bash
-# Rebuild dev container
-# Command Palette: "Dev Containers: Rebuild Container"
-
 # Check Docker logs
 docker-compose logs pdf-summarizer
 ```
@@ -217,7 +182,6 @@ pip install -r requirements.txt --force-reinstall
 
 ```
 📁 Project Structure
-├── 📁 .devcontainer/          # Dev container configuration
 ├── 📁 clients/                # API client classes
 │   ├── canoe_client.py        # Canoe API integration
 │   ├── claude_client.py       # Claude AI summarization
