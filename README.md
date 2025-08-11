@@ -7,27 +7,12 @@ Automatically downloads PDFs from Canoe, summarizes them with Claude AI, and sav
 - 🔐 **Secure credential management** with 1Password CLI integration
 - 🤖 **Intelligent PDF summarization** using Claude AI
 - 📝 **Automatic Notion page creation** with summaries
-- 🐳 **Cross-device compatibility** with Docker
 - 📋 **Structured logging** with timestamps
 - ⚙️ **Configurable processing** settings
 
-## Quick Start Options
+## Quick Start
 
-### Option 1: Docker Compose
-
-**For production or simple deployment:**
-
-```bash
-# Build and run
-docker-compose --profile prod up --build
-
-# For development with live reload
-docker-compose --profile dev up --build
-```
-
-### Option 2: Local Development
-
-**If you prefer local setup:**
+**Local Development Setup:**
 
 1. **Install dependencies:**
    ```bash
@@ -137,9 +122,6 @@ pre-commit run --all-files
 
 ✅ **1Password CLI** for credential management  
 ✅ **No secrets in code** or environment files  
-✅ **Container isolation** for consistent environments  
-✅ **Read-only mounts** for sensitive data  
-✅ **Non-root user** in containers  
 
 ## Troubleshooting
 
@@ -155,12 +137,6 @@ op signin --force
 op item get canoe-api
 ```
 
-### Container Issues
-```bash
-# Check Docker logs
-docker-compose logs pdf-summarizer
-```
-
 ### Python Issues
 ```bash
 # Check dependencies
@@ -173,7 +149,6 @@ pip install -r requirements.txt --force-reinstall
 ## Requirements
 
 - **Python 3.11+**
-- **Docker** (for container usage)
 - **1Password CLI** and account
 - **Valid API keys** for Canoe, Anthropic, and Notion
 - **Internet connection** for API calls
@@ -192,7 +167,5 @@ pip install -r requirements.txt --force-reinstall
 ├── 📁 logs/                   # Application logs
 ├── config.py                  # Configuration with 1Password
 ├── main.py                    # Main application entry point
-├── Dockerfile                 # Container image definition
-├── docker-compose.yml         # Multi-container orchestration
 └── requirements.txt           # Python dependencies
 ```
