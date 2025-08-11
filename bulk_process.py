@@ -9,6 +9,7 @@ import sys
 from loguru import logger
 
 from clients.canoe_client import CanoeClient
+from clients.claude_client import ClaudeClient
 from clients.notion_client import NotionClient
 from utils.logger import setup_logging
 

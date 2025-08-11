@@ -4,7 +4,6 @@ loguru>=0.7.0
 python-dotenv>=1.0.0
 notion-client>=2.0.0
 pymupdf>=1.23.0
-pypdf2>=3.0.0
 
 # Development dependencies
 black>=23.3.0
