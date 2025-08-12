@@ -74,10 +74,10 @@ def main():
             logger.success("✅ Summary generated")
             
             # Print summary
-            print(f"\n📋 Document Summary:")
+            print(f"\nDocument Summary:")
             print(f"   Document: {doc_info['name']}")
             print(f"   ID: {doc_info['id']}")
-            print(f"\n📝 Summary:\n{summary}\n")
+            print(f"\nSummary:\n{summary}\n")
         
         # Save to Notion if enabled
         if not args.no_notion and not args.no_summary and summary:

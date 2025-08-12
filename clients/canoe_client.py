@@ -86,34 +86,9 @@ class CanoeClient:
         return response.json()
     
     def download_document(self, document_id):
-        """Download PDF and get document name in one operation with retry"""
-        # Get document metadata including original filename
-        for attempt in range(3):
-            try:
-                meta_resp = requests.get(
-                    f"{self.base_url}/v1/documents/data",
-                    headers=self.headers,
-                    params={
-                        "id": document_id,
-                        "fields": "id,name,original_file_name"
-                    },
-                    timeout=180
-                )
-                meta_resp.raise_for_status()
-                documents = meta_resp.json()
-                break
-            except requests.exceptions.RequestException as e:
-                if attempt < 2:
-                    logger.warning(f"Metadata request attempt {attempt + 1} failed: {e}. Retrying...")
-                    time.sleep(2 ** attempt)
-                else:
-                    raise
-
-        if not documents:
-            raise ValueError(f"Document {document_id} not found")
-
-        document = documents[0]
-        pdf_name = document.get('original_file_name', f"Document_{document_id}.pdf")
+        """Download PDF with retry (using generic filename)"""
+        # Use generic filename for now
+        pdf_name = f"Document_{document_id}.pdf"
 
         # Download PDF with retry
         for attempt in range(3):
