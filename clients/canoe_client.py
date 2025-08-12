@@ -85,10 +85,46 @@ class CanoeClient:
         response.raise_for_status()
         return response.json()
     
+    def get_document_metadata(self, document_id):
+        """Get document metadata including original filename"""
+        params = {
+            'document_id': document_id,
+            'fields': 'original_file_name,name'
+        }
+        
+        for attempt in range(3):
+            try:
+                response = requests.get(
+                    f'{self.base_url}/v1/documents/data/',
+                    headers=self.headers,
+                    params=params
+                )
+                response.raise_for_status()
+                data = response.json()
+                
+                # Extract filename from response
+                if data and len(data) > 0:
+                    doc_data = data[0]
+                    original_name = doc_data.get('original_file_name')
+                    if original_name:
+                        return original_name
+                
+                # Fallback to generic name if no original_file_name found
+                return f"Document_{document_id}.pdf"
+                
+            except requests.exceptions.RequestException as e:
+                if attempt < 2:
+                    logger.warning(f"Metadata fetch attempt {attempt + 1} failed: {e}. Retrying...")
+                    time.sleep(2 ** attempt)
+                else:
+                    logger.warning(f"Failed to fetch document metadata: {e}. Using generic filename.")
+                    return f"Document_{document_id}.pdf"
+
     def download_document(self, document_id):
-        """Download PDF with retry (using generic filename)"""
-        # Use generic filename for now
-        pdf_name = f"Document_{document_id}.pdf"
+        """Download PDF with retry and get original filename from metadata"""
+        # Get original filename from metadata
+        pdf_name = self.get_document_metadata(document_id)
+        logger.info(f"   📋 Document name: {pdf_name}")
 
         # Download PDF with retry
         for attempt in range(3):
