@@ -66,16 +66,15 @@ class CanoeClient:
     
     def get_new_quarterly_reports(self, days_back=7):
         """Get quarterly reports from last N days"""
-        end_date = datetime.now().strftime('%Y-%m-%d')
-        start_date = (datetime.now() - timedelta(days=days_back)).strftime('%Y-%m-%d')
+        start_date = (datetime.now() - timedelta(days=days_back)).strftime('%Y-%m-%dT00:00:00Z')
         
         params = {
             'document_type': 'Quarterly Report',
-            'document_status': 'Complete',
-            'data_date_start': start_date,
-            'data_date_end': end_date,
+            'file_upload_time_start': start_date,
             'fields': 'id,name,document_type,data_date'
         }
+        
+        logger.info(f"📋 API params: {params}")
         
         response = requests.get(
             f'{self.base_url}/v1/documents/data',
@@ -83,7 +82,11 @@ class CanoeClient:
             params=params
         )
         response.raise_for_status()
-        return response.json()
+        documents = response.json()
+        
+        logger.info(f"📊 Found {len(documents)} quarterly reports")
+        
+        return documents
     
     def get_document_metadata(self, document_id):
         """Get document metadata including original filename"""

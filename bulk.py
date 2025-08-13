@@ -17,8 +17,8 @@ from utils.logger import setup_logging
 def main():
     """Main execution function for quarterly reports processing"""
     parser = argparse.ArgumentParser(description='Process quarterly reports with Claude summaries')
-    parser.add_argument('--days-back', type=int, default=7, 
-                       help='Number of days back to search for reports (default: 7)')
+    parser.add_argument('--days-back', type=int, default=14, 
+                       help='Number of days back to search for reports (default: 14)')
     parser.add_argument('--no-notion', action='store_true',
                        help='Skip saving summaries to Notion')
     
@@ -55,15 +55,15 @@ def main():
             logger.info(f"📄 [{i}/{len(reports)}] Processing: {document_name} (ID: {document_id})")
             
             try:
-                # Step 1: Download PDF
-                logger.info("   ⬇️  Downloading PDF...")
-                pdf_data = canoe.download_pdf(document_id)
-                logger.success("   ✅ PDF downloaded")
+                # Step 1: Download PDF and get original filename
+                logger.info("   ⬇️  Downloading PDF and getting document name...")
+                pdf_data, pdf_name = canoe.download_document(document_id)
+                logger.success(f"   ✅ Downloaded: {pdf_name}")
                 
-                # Create document info
+                # Create document info using original filename
                 doc_info = {
                     'id': document_id,
-                    'name': document_name,
+                    'name': pdf_name,  # Use original filename for Notion title
                     'document_type': report.get('document_type'),
                     'data_date': report.get('data_date')
                 }
@@ -89,14 +89,14 @@ def main():
         logger.success(f"🎉 Successfully processed {processed_count}/{len(reports)} quarterly reports")
         
         # Print summary
-        print(f"\n📋 Processing Summary:")
+        print(f"\nProcessing Summary:")
         print(f"   Reports found: {len(reports)}")
         print(f"   Reports processed: {processed_count}")
         print(f"   Days searched: {args.days_back}")
         if not args.no_notion:
-            print(f"   Saved to Notion: ✅")
+            print(f"   Saved to Notion: Yes")
         else:
-            print(f"   Saved to Notion: ❌ (skipped)")
+            print(f"   Saved to Notion: No (skipped)")
             
     except Exception as e:
         logger.error(f"💥 Application failed: {e}")

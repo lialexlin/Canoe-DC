@@ -12,12 +12,15 @@ class ClaudeClient:
         text_content = self._extract_text_from_pdf(pdf_data)
         
         prompt = f"""
-        You are analyzing a quarterly update report from a private equity manager. Create a concise executive summary (maximum 200 words) that focuses specifically on the macroeconomic update for the country/region covered by the GP.
+        Context: You are analyzing a quarterly update report from a private equity manager. 
+        
+        Task: Create a concise executive summary (maximum 200 words) that focuses specifically on the macroeconomic update for the country/region covered by the GP.
         
         Requirements:
         - Extract only macroeconomic information from the provided report
         - Do not add external information or analysis beyond what's explicitly stated
         - Maintain factual accuracy and objectivity
+        - If no macro information is found, output "NA".
         
         Document: {document_info.get('name', 'Unknown Document')}
         
