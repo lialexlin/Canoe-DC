@@ -2,7 +2,13 @@
   "permissions": {
     "allow": [
       "Bash(python:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(dir logs)",
+      "Bash(dir:*)",
+      "Bash(find:*)",
+      "Bash(cat:*)",
+      "Bash(mkdir:*)",
+      "Bash(mv:*)"
     ],
     "deny": []
   }

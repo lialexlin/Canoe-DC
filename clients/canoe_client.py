@@ -3,7 +3,7 @@ import os
 import time
 from datetime import datetime, timedelta
 from loguru import logger
-import config
+from src import config
 
 class CanoeClient:
     def __init__(self):

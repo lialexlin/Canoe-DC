@@ -1,6 +1,7 @@
 import anthropic
 from loguru import logger
-import config
+from src import config
+import os
 
 class ClaudeClient:
     def __init__(self):
@@ -11,22 +12,13 @@ class ClaudeClient:
         # Convert PDF to text (simplified - you might need better PDF processing)
         text_content = self._extract_text_from_pdf(pdf_data)
         
-        prompt = f"""
-        Context: You are analyzing a quarterly update report from a private equity manager. 
+        # Load prompt template from file
+        prompt_template = self._load_prompt_template()
         
-        Task: Create a concise executive summary (maximum 200 words) that focuses specifically on the macroeconomic update for the country/region covered by the GP.
-        
-        Requirements:
-        - Extract only macroeconomic information from the provided report
-        - Do not add external information or analysis beyond what's explicitly stated
-        - Maintain factual accuracy and objectivity
-        - If no macro information is found, output "NA".
-        
-        Document: {document_info.get('name', 'Unknown Document')}
-        
-        Document content:
-        {text_content[:10000]}  # Limit content to fit in context
-        """
+        prompt = prompt_template.format(
+            document_name=document_info.get('name', 'Unknown Document'),
+            document_content=text_content[:10000]  # Limit content to fit in context
+        )
         
         response = self.client.messages.create(
             model="claude-3-5-sonnet-20241022",
@@ -35,6 +27,16 @@ class ClaudeClient:
         )
         
         return response.content[0].text
+    
+    def _load_prompt_template(self):
+        """Load prompt template from file"""
+        try:
+            prompt_path = os.path.join(os.path.dirname(__file__), '..', 'prompts', 'claude_summary_prompt.txt')
+            with open(prompt_path, 'r', encoding='utf-8') as f:
+                return f.read()
+        except FileNotFoundError:
+            logger.error("Prompt template file not found, using fallback prompt")
+            return """Extract macroeconomic updates from this report (max 200 words). Document: {document_name}. Content: {document_content}"""
     
     def _extract_text_from_pdf(self, pdf_data):
         """Extract text from PDF using PyMuPDF (better extraction quality)"""

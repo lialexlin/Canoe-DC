@@ -1,7 +1,7 @@
 from notion_client import Client
 from datetime import datetime
 from loguru import logger
-import config
+from src import config
 
 class NotionClient:
     def __init__(self):

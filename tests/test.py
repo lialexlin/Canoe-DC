@@ -6,7 +6,11 @@ Processes all document IDs from test_document_id.text with Claude summaries
 
 import argparse
 import sys
+import os
 from loguru import logger
+
+# Add parent directory to path for imports
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from clients.canoe_client import CanoeClient
 from clients.claude_client import ClaudeClient
@@ -75,8 +79,8 @@ def main():
     parser = argparse.ArgumentParser(description='Process test documents with Claude summaries')
     parser.add_argument('--no-notion', action='store_true',
                        help='Skip saving summaries to Notion')
-    parser.add_argument('--test-file', type=str, default='test_document_id.text',
-                       help='Path to test document IDs file (default: test_document_id.text)')
+    parser.add_argument('--test-file', type=str, default='tests/test_document_id.text',
+                       help='Path to test document IDs file (default: tests/test_document_id.text)')
     
     args = parser.parse_args()
     
