@@ -10,7 +10,9 @@
       "Bash(mkdir:*)",
       "Bash(mv:*)",
       "Bash(py test.py)",
-      "Bash(py tests/test.py)"
+      "Bash(py tests/test.py)",
+      "WebSearch",
+      "Bash(git log:*)"
     ],
     "deny": []
   }

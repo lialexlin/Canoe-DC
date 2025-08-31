@@ -1,0 +1,124 @@
+{
+  "description": "Document filter presets for Canoe API queries",
+  "version": "1.0",
+  "presets": {
+    "quarterly_reports": {
+      "name": "Quarterly Reports (Last 30 Days)",
+      "description": "Get quarterly reports uploaded in the last 30 days",
+      "document_type": "Quarterly Report",
+      "file_upload_time_start": "auto:30d",
+      "document_status": "Complete",
+      "fields": "id,name,document_type,data_date,fund_id,fund_sponsor"
+    },
+    "quarterly_reports_recent": {
+      "name": "Recent Quarterly Reports (Last 14 Days)", 
+      "description": "Get quarterly reports from last 2 weeks",
+      "document_type": "Quarterly Report",
+      "file_upload_time_start": "auto:14d",
+      "document_status": "Complete",
+      "fields": "id,name,document_type,data_date"
+    },
+    "annual_reports_2024": {
+      "name": "2024 Annual Reports",
+      "description": "All annual reports for calendar year 2024",
+      "document_type": "Annual Report",
+      "data_date_start": "2024-01-01",
+      "data_date_end": "2024-12-31",
+      "document_status": "Complete",
+      "fields": "id,name,document_type,data_date,fund_id,fund_sponsor"
+    },
+    "annual_reports_2023": {
+      "name": "2023 Annual Reports",
+      "description": "All annual reports for calendar year 2023", 
+      "document_type": "Annual Report",
+      "data_date_start": "2023-01-01",
+      "data_date_end": "2023-12-31",
+      "document_status": "Complete",
+      "fields": "id,name,document_type,data_date,fund_id,fund_sponsor"
+    },
+    "capital_calls_recent": {
+      "name": "Recent Capital Calls",
+      "description": "Capital call notices from last 14 days",
+      "document_type": "Capital Call Notice",
+      "file_upload_time_start": "auto:14d",
+      "document_status": "Complete",
+      "fields": "id,name,document_type,data_date,fund_id"
+    },
+    "all_statements_monthly": {
+      "name": "Monthly Account Statements",
+      "description": "Account statements uploaded in last 30 days",
+      "document_type": "Account Statement",
+      "file_upload_time_start": "auto:30d",
+      "document_status": "Complete",
+      "fields": "id,name,document_type,data_date,account_id"
+    },
+    "multi_type_recent": {
+      "name": "Multiple Document Types (Recent)",
+      "description": "Quarterly reports, annual reports, and capital calls from last 21 days",
+      "document_type": "Quarterly Report,Annual Report,Capital Call Notice",
+      "file_upload_time_start": "auto:21d",
+      "document_status": "Complete",
+      "fields": "id,name,document_type,data_date,fund_id"
+    },
+    "custom_date_range": {
+      "name": "Custom Date Range Template",
+      "description": "Template for custom date range queries (modify dates as needed)",
+      "document_type": "Quarterly Report",
+      "data_date_start": "2024-01-01", 
+      "data_date_end": "2024-06-30",
+      "document_status": "Complete",
+      "fields": "id,name,document_type,data_date,fund_id,fund_sponsor"
+    }
+  },
+  "field_options": {
+    "description": "Available fields you can request from Canoe API",
+    "common_fields": [
+      "id",
+      "name", 
+      "document_type",
+      "data_date",
+      "fund_id",
+      "fund_sponsor",
+      "account_id",
+      "document_status",
+      "file_upload_time",
+      "last_modified_time"
+    ],
+    "all_fields": [
+      "id", "name", "document_type", "data_date", "fund_id", "fund_sponsor",
+      "account_id", "investment_entity_id", "document_status", "document_source",
+      "file_upload_time", "last_modified_time", "is_locked", "ready_for_extract",
+      "approval_status", "approved_by", "approval_date", "assignee",
+      "document_tag_id", "category", "client_document_id", "account_group"
+    ]
+  },
+  "parameter_reference": {
+    "description": "Reference for Canoe API parameters",
+    "date_formats": {
+      "data_date_start": "YYYY-MM-DD (e.g., 2024-01-01)",
+      "data_date_end": "YYYY-MM-DD (e.g., 2024-12-31)", 
+      "file_upload_time_start": "YYYY-MM-DDTHH:MM:SSZ or auto:Nd (e.g., auto:30d)",
+      "file_upload_time_end": "YYYY-MM-DDTHH:MM:SSZ"
+    },
+    "common_document_types": [
+      "Quarterly Report",
+      "Annual Report", 
+      "Capital Call Notice",
+      "Account Statement",
+      "Distribution Notice",
+      "K-1 Tax Document"
+    ],
+    "document_status_options": [
+      "Complete",
+      "Storage Only",
+      "Processing",
+      "Failed"
+    ],
+    "auto_date_examples": {
+      "auto:7d": "7 days back from today",
+      "auto:30d": "30 days back from today",
+      "auto:90d": "90 days back from today",
+      "auto:1y": "1 year back from today"
+    }
+  }
+}

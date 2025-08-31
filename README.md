@@ -4,9 +4,10 @@ Automatically downloads PDFs from Canoe, summarizes them with Claude AI, and sav
 
 ## Features
 
-- 🔐 **Secure credential management** with 1Password CLI integration
+- 🔐 **Secure credential management** with Bitwarden CLI integration
 - 🤖 **Intelligent PDF summarization** using Claude AI
 - 📝 **Automatic Notion page creation** with summaries
+- 📊 **Google Sheets integration** for data analysis
 - 📋 **Structured logging** with timestamps
 - ⚙️ **Configurable processing** settings
 
@@ -19,37 +20,44 @@ Automatically downloads PDFs from Canoe, summarizes them with Claude AI, and sav
    pip install -r requirements.txt
    ```
 
-2. **Install 1Password CLI:**
-   - **macOS:** `brew install 1password-cli`
-   - **Linux:** See [1Password CLI installation guide](https://developer.1password.com/docs/cli/get-started)
-   - **Windows:** Download from [1Password CLI releases](https://app-updates.agilebits.com/product_history/CLI2)
+2. **Install Bitwarden CLI:**
+   - **macOS:** `brew install bitwarden-cli`
+   - **Linux:** `sudo snap install bw` or download from [Bitwarden CLI](https://bitwarden.com/help/cli/)
+   - **Windows:** Download from [Bitwarden CLI releases](https://github.com/bitwarden/cli/releases)
 
-3. **Sign in to 1Password:**
+3. **Sign in to Bitwarden:**
    ```bash
-   op signin
+   bw login
+   # Then unlock your vault
+   bw unlock
+   # Export the session key
+   export BW_SESSION="your-session-key"
    ```
 
-## 1Password Setup
+## Bitwarden Setup
 
-Create these items in your 1Password vault:
+Create these items in your Bitwarden vault under the `Axiom` folder:
 
 ### 1. Canoe API Credentials
-- **Item name:** `canoe-api`
+- **Item name:** `Canoe`
+- **Folder:** `Axiom`
 - **Fields:**
-  - `client_id` (your Canoe client ID)
-  - `client_secret` (your Canoe client secret)
-  - `base_url` (usually `https://api.canoesoftware.com`)
+  - Username: Your Canoe client ID
+  - Password: Your Canoe client secret
+  - URI: `https://api.canoesoftware.com`
 
 ### 2. Anthropic API
-- **Item name:** `anthropic-api`
+- **Item name:** `Claude`
+- **Folder:** `Axiom`
 - **Fields:**
-  - `api_key` (your Anthropic API key from https://console.anthropic.com/)
+  - Password: Your Anthropic API key from https://console.anthropic.com/
 
 ### 3. Notion Integration
-- **Item name:** `notion-integration`
+- **Item name:** `Notion`
+- **Folder:** `Axiom`
 - **Fields:**
-  - `token` (your Notion integration token)
-  - `database_id` (your Notion database ID)
+  - Password: Your Notion integration token
+  - Notes or Custom Field: `database_id: your-database-id-here`
 
 ### Setup Instructions:
 
@@ -63,23 +71,26 @@ Create these items in your 1Password vault:
    - Share the database with your integration
    - Copy the database ID from the URL
 
-3. **Add to 1Password:**
-   ```bash
-   # Example: Create Canoe API item
-   op item create \
-     --category="API Credential" \
-     --title="canoe-api" \
-     --vault="Personal" \
-     client_id="your_client_id" \
-     client_secret="your_client_secret" \
-     base_url="https://api.canoesoftware.com"
-   ```
-
 ## Configuration
 
-### Environment Variables (Optional Fallback)
+### Environment Variables
 
-If 1Password is unavailable, create a `.env` file:
+Set these for Bitwarden session management:
+
+```bash
+# Required after unlock
+export BW_SESSION="your-session-key"
+
+# Optional: Auto-unlock with password
+export BW_PASSWORD="your-master-password"
+
+# Optional: Custom folder (default: Axiom)
+export BW_FOLDER="Axiom"
+```
+
+### Fallback Configuration
+
+If Bitwarden is unavailable, create a `.env` file:
 
 ```bash
 cp .env.example .env

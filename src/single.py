@@ -27,6 +27,10 @@ def main():
                        help='Skip generating Claude summary (download only)')
     parser.add_argument('--no-notion', action='store_true',
                        help='Skip saving summary to Notion')
+    parser.add_argument('--google-sheets', action='store_true',
+                       help='Also save summary to Google Sheets')
+    parser.add_argument('--sheets-only', action='store_true',
+                       help='Save to Google Sheets only (skip Notion)')
     parser.add_argument('--save-pdf', type=str,
                        help='Save PDF to specified file path')
     
@@ -36,6 +40,11 @@ def main():
     logger.info("🚀 Starting Single Document Processor")
     
     try:
+        # Handle sheets-only option
+        if args.sheets_only:
+            args.no_notion = True
+            args.google_sheets = True
+        
         # Initialize clients
         logger.info("📡 Initializing API clients...")
         canoe = CanoeClient()
@@ -43,8 +52,20 @@ def main():
         if not args.no_summary:
             claude = ClaudeClient()
         
+        notion = None
+        google_sheets = None
+        
         if not args.no_notion and not args.no_summary:
             notion = NotionClient()
+            
+        if (args.google_sheets or args.sheets_only) and not args.no_summary:
+            try:
+                from clients.google_sheets_client import GoogleSheetsClient
+                google_sheets = GoogleSheetsClient()
+                logger.success("✅ Google Sheets client initialized")
+            except Exception as e:
+                logger.warning(f"Failed to initialize Google Sheets: {e}")
+                google_sheets = None
         
         # Download document
         if not args.document_id:
@@ -84,10 +105,19 @@ def main():
             print(f"\nSummary:\n{summary}\n")
         
         # Save to Notion if enabled
-        if not args.no_notion and not args.no_summary and summary:
+        notion_url = None
+        if not args.no_notion and not args.no_summary and summary and notion:
             logger.info("💾 Saving summary to Notion...")
-            notion.create_summary_page(doc_info, summary)
+            response = notion.create_summary_page(doc_info, summary)
+            notion_url = response.get('url', '')
             logger.success("✅ Summary saved to Notion")
+        
+        # Save to Google Sheets if enabled
+        if google_sheets and summary:
+            logger.info("📊 Saving summary to Google Sheets...")
+            sheets_url = google_sheets.add_summary_row(doc_info, summary, notion_url)
+            logger.success(f"✅ Summary saved to Google Sheets")
+            print(f"Spreadsheet URL: {sheets_url}")
         
         logger.success(f"🎉 Successfully processed document: {doc_info['name']}")
         
