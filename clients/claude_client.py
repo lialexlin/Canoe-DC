@@ -1,8 +1,10 @@
-import anthropic
-from loguru import logger
-from src import config
 import os
 import re
+
+import anthropic
+from loguru import logger
+
+from src import config
 
 # Constants for PDF processing
 SECTION_BREAK_THRESHOLD = 30  # Vertical pixels indicating section break between text blocks
@@ -11,7 +13,10 @@ CLAUDE_MODEL = "claude-sonnet-4-20250514"  # Claude Sonnet 4.0 model (May 2025 v
 MAX_SUMMARY_WORDS = 200  # Maximum words in summary (as per prompt)
 
 class ClaudeClient:
+    """Client for processing PDF documents and generating summaries using Claude AI."""
+    
     def __init__(self):
+        """Initialize Claude AI client with API credentials."""
         self.client = anthropic.Anthropic(api_key=config.ANTHROPIC_API_KEY)
     
     def summarize_pdf(self, pdf_data, document_info):

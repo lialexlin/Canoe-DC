@@ -5,15 +5,16 @@ Downloads quarterly reports from the last N days and generates Claude summaries
 """
 
 import argparse
-import sys
 import os
+import sys
+
+from dotenv import load_dotenv
 from loguru import logger
 
 # Add parent directory to path for imports
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # Ensure environment variables are loaded
-from dotenv import load_dotenv
 load_dotenv()
 
 from clients.canoe_client import CanoeClient

@@ -6,6 +6,7 @@ Verifies that credentials can be retrieved from Bitwarden
 
 import os
 import sys
+
 from loguru import logger
 
 # Add current directory to path

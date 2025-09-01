@@ -1,14 +1,25 @@
-import requests
-import os
-import time
 import json
+import os
 import re
+import time
 from datetime import datetime, timedelta
+
+import requests
 from loguru import logger
+
 from src import config
 
+# Constants for API configuration
+DEFAULT_FILTER_CONFIG_PATH = 'config/document_filters.json'
+DEFAULT_TIMEOUT_SECONDS = 180
+MAX_RETRY_ATTEMPTS = 3
+API_RATE_LIMIT_DELAY = 1  # seconds between requests
+
 class CanoeClient:
+    """Client for interacting with the Canoe API to retrieve and download documents."""
+    
     def __init__(self):
+        """Initialize Canoe API client with credentials and authentication."""
         self.base_url = config.CANOE_BASE_URL
         self.client_id = config.CANOE_CLIENT_ID
         self.client_secret = config.CANOE_CLIENT_SECRET
@@ -36,7 +47,7 @@ class CanoeClient:
             "client_secret": self.client_secret
         }
         
-        for attempt in range(3):
+        for attempt in range(MAX_RETRY_ATTEMPTS):
             try:
                 response = requests.post(
                     f'{self.base_url}/oauth/token',
@@ -194,7 +205,7 @@ class CanoeClient:
             logger.error(f"Error calculating auto-date {auto_date_str}: {e}")
             return auto_date_str
 
-    def load_filter_presets(self, config_file='config/document_filters.json'):
+    def load_filter_presets(self, config_file=DEFAULT_FILTER_CONFIG_PATH):
         """Load filter presets from configuration file
         
         Args:
@@ -223,7 +234,7 @@ class CanoeClient:
             logger.error(f"Invalid JSON in filter configuration: {e}")
             return {'presets': {}}
     
-    def get_documents_by_preset(self, preset_name, config_file='config/document_filters.json', overrides=None):
+    def get_documents_by_preset(self, preset_name, config_file=DEFAULT_FILTER_CONFIG_PATH, overrides=None):
         """Get documents using a named preset configuration
         
         Args:
@@ -295,7 +306,7 @@ class CanoeClient:
             'fields': 'original_file_name,name'
         }
         
-        for attempt in range(3):
+        for attempt in range(MAX_RETRY_ATTEMPTS):
             try:
                 response = requests.get(
                     f'{self.base_url}/v1/documents/data/',
@@ -330,12 +341,12 @@ class CanoeClient:
         logger.info(f"   📋 Document name: {pdf_name}")
 
         # Download PDF with retry
-        for attempt in range(3):
+        for attempt in range(MAX_RETRY_ATTEMPTS):
             try:
                 pdf_resp = requests.get(
                     f'{self.base_url}/v1/documents/{document_id}',
                     headers=self.headers,
-                    timeout=180
+                    timeout=DEFAULT_TIMEOUT_SECONDS
                 )
                 pdf_resp.raise_for_status()
                 pdf_data = pdf_resp.content
@@ -352,7 +363,7 @@ class CanoeClient:
         response = requests.get(
             f'{self.base_url}/v1/documents/{document_id}',
             headers=self.headers,
-            timeout=180
+            timeout=DEFAULT_TIMEOUT_SECONDS
         )
         response.raise_for_status()
         return response.content

@@ -2,12 +2,14 @@
 """
 Test script for Progress Tracker functionality
 """
-import sys
 import os
+import sys
+
+from loguru import logger
+
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from utils.progress_tracker import ProgressTracker
-from loguru import logger
 
 def test_progress_tracker():
     """Test the progress tracker with mock documents"""

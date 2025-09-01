@@ -113,10 +113,12 @@ export BW_FOLDER="Axiom"  # Optional custom folder
 ## Code Standards
 - **Black formatter**: 88 character line length
 - **Flake8**: Extended ignore for E203
-- **Import organization**: Standard library, third-party, local imports
-- **Constants**: Named constants instead of magic numbers
+- **Import organization**: Standard library, third-party, local imports (enforced across all files)
+- **Constants**: Named constants instead of magic numbers (DEFAULT_TIMEOUT_SECONDS, MAX_RETRY_ATTEMPTS, etc.)
+- **Documentation**: All classes and methods have comprehensive docstrings
 - **Security**: No credential logging, secure session handling
 - **Error logging**: Use logger with appropriate level (info/warning/error/success)
+- **File organization**: Clean structure with no legacy/test files in root directory
 
 ## Testing & Validation
 Available test utilities:
@@ -141,3 +143,4 @@ When implementing features:
 - **Google Sheets integration**: Professional spreadsheet output with formatting
 - **Dual storage**: Simultaneous Notion and Sheets saving
 - **Comprehensive testing**: Security validation and integration tests
+- **Codebase cleanup & maintenance (2025-09-01)**: Removed legacy files, standardized imports, improved documentation, enhanced code consistency

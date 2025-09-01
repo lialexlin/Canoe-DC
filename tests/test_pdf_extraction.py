@@ -4,13 +4,15 @@ Test script to verify enhanced PDF extraction
 Compares old vs new extraction methods
 """
 
-import sys
 import os
+import sys
+
+from loguru import logger
+
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from clients.canoe_client import CanoeClient
 from clients.claude_client import ClaudeClient
-from loguru import logger
 from utils.logger import setup_logging
 
 def test_extraction():

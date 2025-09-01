@@ -2,12 +2,14 @@
 """
 Test Google Sheets configuration with new spreadsheet ID
 """
-import sys
 import os
+import sys
+
+from loguru import logger
+
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from clients.google_sheets_client import GoogleSheetsClient
-from loguru import logger
 from utils.logger import setup_logging
 
 def test_sheets_config():

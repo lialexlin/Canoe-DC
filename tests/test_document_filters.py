@@ -4,8 +4,9 @@ Test Document Filtering System
 Tests the new preset-based filtering without processing documents
 """
 
-import sys
 import os
+import sys
+
 from loguru import logger
 
 # Add current directory to path

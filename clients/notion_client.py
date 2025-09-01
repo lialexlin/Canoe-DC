@@ -1,10 +1,15 @@
-from notion_client import Client
 from datetime import datetime
+
 from loguru import logger
+from notion_client import Client
+
 from src import config
 
 class NotionClient:
+    """Client for creating and managing document summary pages in Notion."""
+    
     def __init__(self):
+        """Initialize Notion client with authentication token."""
         self.client = Client(auth=config.NOTION_TOKEN)
         self.database_id = config.NOTION_DATABASE_ID
     

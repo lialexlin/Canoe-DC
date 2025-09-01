@@ -4,8 +4,9 @@ Security Fixes Validation Test
 Tests the security improvements made to address code review findings
 """
 
-import sys
 import os
+import sys
+
 from loguru import logger
 
 # Add current directory to path

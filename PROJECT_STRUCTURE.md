@@ -31,15 +31,13 @@ Canoe-DC/
 │   ├── bulk.py             # Bulk document processor
 │   ├── config.py           # Configuration management
 │   └── single.py           # Single document processor
-├── tests/                   # Test files
-│   ├── test.py             # Legacy test file
+├── tests/                   # Test files  
 │   ├── test_bitwarden.py   # Bitwarden integration tests
 │   ├── test_document_filters.py  # Filter system tests
 │   ├── test_pdf_extraction.py    # PDF processing tests
 │   ├── test_progress_tracker.py  # Progress tracking tests
 │   ├── test_security_fixes.py    # Security tests
-│   ├── test_sheets_config.py     # Google Sheets tests
-│   └── test_document_id.text     # Test document ID
+│   └── test_sheets_config.py     # Google Sheets tests
 ├── utils/                   # Utility modules
 │   ├── __pycache__/        # Python cache (gitignored)
 │   ├── logger.py           # Logging configuration
@@ -91,6 +89,19 @@ The following are excluded via `.gitignore`:
 - `/logs/` contents - Application logs
 - `__pycache__/` directories - Python bytecode
 - `*.pyc` files - Compiled Python files
+
+## Recent Cleanup (2025-09-01)
+
+**Removed Files**:
+- Legacy test scripts: `test_allocation_field.py`, `test_final_allocation.py`, `verify_investment.py`, `test_first_10.py`
+- Outdated test files: `tests/test_legacy_bulk_processor.py`, `tests/test_document_id.text`  
+- Python cache files and old session data
+
+**Code Quality Improvements**:
+- Standardized import organization across all files
+- Added comprehensive docstrings to all classes and methods
+- Improved error handling with configurable constants
+- Enhanced code consistency and maintainability
 
 ## Development Workflow
 

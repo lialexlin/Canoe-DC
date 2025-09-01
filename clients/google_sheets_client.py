@@ -1,11 +1,13 @@
-import os
 import json
+import os
 import time
 from datetime import datetime
-from loguru import logger
+
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
+from loguru import logger
+
 from src import config
 
 # Constants for Google Sheets API
@@ -14,6 +16,8 @@ RATE_LIMIT_DELAY = 0.1  # Seconds between API calls
 BATCH_SIZE = 100  # Maximum rows per batch operation
 
 class GoogleSheetsClient:
+    """Client for saving document summaries to Google Sheets spreadsheets."""
+    
     def __init__(self):
         """Initialize Google Sheets client with credentials"""
         self.spreadsheet_id = None
