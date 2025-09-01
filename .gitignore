@@ -41,8 +41,9 @@ venv.bak/
 logs/
 *.log
 
-# Temporary files
+# Temporary files and data
 data/temp_pdfs/
+data/progress/
 *.tmp
 *.temp
 

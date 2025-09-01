@@ -2,12 +2,12 @@ import anthropic
 from loguru import logger
 from src import config
 import os
+import re
 
 # Constants for PDF processing
 SECTION_BREAK_THRESHOLD = 30  # Vertical pixels indicating section break between text blocks
-MAX_CLAUDE_CONTENT_LENGTH = 10000  # Maximum characters to send to Claude
-MAX_CLAUDE_TOKENS = 2000  # Maximum tokens for Claude response
-CLAUDE_MODEL = "claude-3-5-sonnet-20241022"  # Claude model version
+# Claude Sonnet 4 has 200K+ token context - no need to limit response tokens
+CLAUDE_MODEL = "claude-sonnet-4-20250514"  # Claude Sonnet 4.0 model (May 2025 version)
 MAX_SUMMARY_WORDS = 200  # Maximum words in summary (as per prompt)
 
 class ClaudeClient:
@@ -24,12 +24,12 @@ class ClaudeClient:
         
         prompt = prompt_template.format(
             document_name=document_info.get('name', 'Unknown Document'),
-            document_content=text_content[:MAX_CLAUDE_CONTENT_LENGTH]  # Limit content to fit in context
+            document_content=text_content  # Send full content - no truncation
         )
         
         response = self.client.messages.create(
             model=CLAUDE_MODEL,
-            max_tokens=MAX_CLAUDE_TOKENS,
+            max_tokens=4096,  # Generous limit to allow full 200-word summaries
             messages=[{"role": "user", "content": prompt}]
         )
         

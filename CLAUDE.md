@@ -50,9 +50,10 @@ Automated PDF document processing workflow that downloads PDFs from Canoe, summa
 
 **Claude Integration**: 
 - Model: `claude-3-5-sonnet-20241022`
-- Focus: Macroeconomic analysis from quarterly reports
-- Content limit: 10,000 characters, Output: 200 words max
+- Focus: Market commentary including macroeconomic updates AND sector/industry insights
+- Content limit: 10,000 characters, Output: 200 words max (strictly enforced)
 - Enhanced text preprocessing for better accuracy
+- Streamlined prompt design for concise output without explanatory text
 
 **Document Filtering**: Flexible preset system supporting all Canoe API parameters
 - Auto-date calculation: `auto:30d`, `auto:1y`, etc.
@@ -64,6 +65,7 @@ Automated PDF document processing workflow that downloads PDFs from Canoe, summa
 - Rate limiting and API quota protection  
 - Input validation and length limits
 - Batch operations for efficiency
+- Service account impersonation via gcloud auth
 
 ## Usage Examples
 

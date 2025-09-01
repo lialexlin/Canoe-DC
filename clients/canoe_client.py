@@ -73,7 +73,7 @@ class CanoeClient:
         params = {
             'document_type': 'Quarterly Report',
             'file_upload_time_start': start_date,
-            'fields': 'id,name,document_type,data_date'
+            'fields': 'id,name,document_type,data_date,allocations,investment,investment_id'
         }
         
         logger.info(f"📋 API params: {params}")
@@ -150,7 +150,7 @@ class CanoeClient:
         
         # Set default fields if not specified
         if 'fields' not in params:
-            params['fields'] = 'id,name,document_type,data_date'
+            params['fields'] = 'id,name,document_type,data_date,allocations,investment,investment_id'
             
         return params
     

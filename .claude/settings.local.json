@@ -12,7 +12,16 @@
       "Bash(py test.py)",
       "Bash(py tests/test.py)",
       "WebSearch",
-      "Bash(git log:*)"
+      "Bash(git log:*)",
+      "Bash(test:*)",
+      "Bash(gcloud auth:*)",
+      "Bash(gcloud config:*)",
+      "Bash(gcloud services enable:*)",
+      "Bash(pkill:*)",
+      "Bash(taskkill:*)",
+      "Bash(del:*)",
+      "Bash(black:*)",
+      "Bash(flake8:*)"
     ],
     "deny": []
   }

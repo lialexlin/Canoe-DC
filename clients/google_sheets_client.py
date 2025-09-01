@@ -9,7 +9,6 @@ from googleapiclient.errors import HttpError
 from src import config
 
 # Constants for Google Sheets API
-MAX_SUMMARY_LENGTH = 500  # Maximum characters for summary in sheets
 MAX_RETRIES = 3  # Maximum API call retries
 RATE_LIMIT_DELAY = 0.1  # Seconds between API calls
 BATCH_SIZE = 100  # Maximum rows per batch operation
@@ -46,25 +45,61 @@ class GoogleSheetsClient:
     def _initialize_service(self):
         """Initialize Google Sheets API service"""
         try:
-            # Get credentials from config (Bitwarden or env variables)
-            credentials_json = config.get_config_value(
-                "google-sheets", "credentials_json", "GOOGLE_SHEETS_CREDENTIALS_JSON"
-            )
-            self.spreadsheet_id = config.get_config_value(
-                "google-sheets", "spreadsheet_id", "GOOGLE_SHEETS_SPREADSHEET_ID"
-            )
+            # Use the new hardcoded spreadsheet ID
+            self.spreadsheet_id = "1fFae7B7YfDImqygh9wvEQPaDQQgLDFLTN3DH4ayuVlg"
+            logger.info(f"Using spreadsheet ID: {self.spreadsheet_id}")
             
-            # Parse credentials JSON
-            if isinstance(credentials_json, str):
-                creds_dict = json.loads(credentials_json)
-            else:
-                creds_dict = credentials_json
-            
-            # Create credentials object
-            credentials = service_account.Credentials.from_service_account_info(
-                creds_dict,
-                scopes=['https://www.googleapis.com/auth/spreadsheets']
-            )
+            # Try to get service account credentials from config first
+            try:
+                credentials_json = config.get_config_value(
+                    "google-sheets", "credentials_json", "GOOGLE_SHEETS_CREDENTIALS_JSON"
+                )
+                
+                # Parse credentials JSON
+                if isinstance(credentials_json, str):
+                    creds_dict = json.loads(credentials_json)
+                else:
+                    creds_dict = credentials_json
+                
+                # Create credentials object
+                credentials = service_account.Credentials.from_service_account_info(
+                    creds_dict,
+                    scopes=['https://www.googleapis.com/auth/spreadsheets']
+                )
+                
+                # Get user email for impersonation
+                user_email = config.get_config_value(
+                    "google-sheets", "user_email", "GOOGLE_SHEETS_USER_EMAIL", 
+                    default="xelailnil@gmail.com"
+                )
+                
+                # Try to impersonate user if email is provided
+                if user_email:
+                    try:
+                        credentials = credentials.with_subject(user_email)
+                        logger.info(f"✅ Using service account impersonation for user: {user_email}")
+                    except Exception as e:
+                        logger.warning(f"Could not impersonate {user_email}, using service account directly: {e}")
+                        
+            except ValueError:
+                # Fallback to Application Default Credentials with impersonation
+                logger.info("Service account JSON not found, trying Application Default Credentials with impersonation...")
+                
+                from google.auth import default
+                from google.auth import impersonated_credentials
+                
+                # Get default credentials (from gcloud auth application-default login)
+                source_credentials, project = default(scopes=['https://www.googleapis.com/auth/cloud-platform'])
+                
+                # Create impersonated credentials
+                service_account_email = "google-sheet-client@canoe-summary-470801.iam.gserviceaccount.com"
+                credentials = impersonated_credentials.Credentials(
+                    source_credentials=source_credentials,
+                    target_principal=service_account_email,
+                    target_scopes=['https://www.googleapis.com/auth/spreadsheets']
+                )
+                
+                logger.info(f"✅ Using impersonated credentials for: {service_account_email}")
             
             # Build service
             self.service = build('sheets', 'v4', credentials=credentials)
@@ -133,11 +168,11 @@ class GoogleSheetsClient:
     def _add_headers(self, sheet_name):
         """Add headers to a new sheet"""
         headers = [
-            ['Fund Name', 'Document ID', 'Date Processed', 'Data Date', 
+            ['Fund Name', 'Investment', 'Document ID', 'Date Processed', 'Data Date', 
              'Summary', 'Document Type', 'Processing Status', 'Notion URL']
         ]
         
-        range_name = f"{sheet_name}!A1:H1"
+        range_name = f"{sheet_name}!A1:I1"
         
         body = {
             'values': headers
@@ -237,17 +272,18 @@ class GoogleSheetsClient:
             # Prepare row data with input validation
             row_data = [
                 self._validate_input(document_info.get('name', 'Unknown'), max_length=100),
+                self._validate_input(document_info.get('investment', 'Unknown'), max_length=100),  # Add investment name
                 self._validate_input(document_info.get('id', ''), max_length=50),
                 datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
                 self._validate_input(document_info.get('data_date', ''), max_length=50),
-                self._validate_input(summary, max_length=MAX_SUMMARY_LENGTH) if summary else 'NA',
+                summary if summary else 'NA',
                 self._validate_input(document_info.get('document_type', 'Quarterly Report'), max_length=50),
                 'Completed',
                 self._validate_input(notion_url or '', max_length=200)
             ]
             
             # Add row to sheet
-            range_name = f"{sheet_name}!A{next_row}:H{next_row}"
+            range_name = f"{sheet_name}!A{next_row}:I{next_row}"
             body = {
                 'values': [row_data]
             }

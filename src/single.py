@@ -74,6 +74,23 @@ def main():
             
         logger.info(f"📄 Processing document ID: {args.document_id}")
         
+        # First, get document metadata including investment info
+        logger.info("   📋 Getting document metadata...")
+        filter_config = {
+            'document_id': args.document_id,
+            'fields': 'id,name,document_type,data_date,allocations,investment,investment_id'
+        }
+        documents = canoe.get_documents_by_filter(filter_config)
+        
+        # Extract investment name from the document metadata
+        investment_name = 'Unknown'
+        if documents and len(documents) > 0:
+            doc = documents[0]
+            if 'allocations' in doc and isinstance(doc['allocations'], list) and len(doc['allocations']) > 0:
+                first_alloc = doc['allocations'][0]
+                if isinstance(first_alloc, dict) and 'investment' in first_alloc:
+                    investment_name = first_alloc['investment']
+        
         # Step 1: Download PDF and get document name
         logger.info("   ⬇️  Downloading PDF and getting document name...")
         pdf_data, pdf_name = canoe.download_document(args.document_id)
@@ -82,7 +99,8 @@ def main():
         # Create document info
         doc_info = {
             'id': args.document_id,
-            'name': pdf_name
+            'name': pdf_name,
+            'investment': investment_name  # Add investment name
         }
         
         # Save PDF if requested

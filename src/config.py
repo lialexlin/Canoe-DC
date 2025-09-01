@@ -260,6 +260,9 @@ def get_config_value(bw_item, field_name, env_var, default=None):
                 # SECURITY FIX: Never log actual credential values
                 logger.debug(f"✅ Retrieved {actual_item}.{field_name} from Bitwarden")
                 return value
+            if default is not None:
+                logger.debug(f"Using default value for {actual_item}.{field_name}")
+                return default
             logger.warning(f"Empty value from Bitwarden for {actual_item}.{field_name}, trying environment")
         except Exception as e:
             logger.warning(f"Bitwarden lookup failed for {actual_item}.{field_name}: {e}")

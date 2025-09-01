@@ -33,6 +33,30 @@ class NotionClient:
                     "rich_text": [
                         {
                             "type": "text",
+                            "text": {"content": "Document Information"}
+                        }
+                    ]
+                }
+            },
+            {
+                "object": "block",
+                "type": "paragraph",
+                "paragraph": {
+                    "rich_text": [
+                        {
+                            "type": "text",
+                            "text": {"content": f"Investment: {document_info.get('investment', 'Unknown')}"}
+                        }
+                    ]
+                }
+            },
+            {
+                "object": "block",
+                "type": "heading_2",
+                "heading_2": {
+                    "rich_text": [
+                        {
+                            "type": "text",
                             "text": {"content": "Executive Summary"}
                         }
                     ]

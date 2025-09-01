@@ -1,16 +1,39 @@
-Context: You are analyzing a quarterly update report from a private equity manager.
+You are tasked with analyzing a quarterly update report from a private equity manager to extract high-level market commentary including macroeconomic updates AND sector/industry insights.
 
-Task: Extract ONLY macroeconomic updates from this report. Focus exclusively on macro conditions, economic trends, or market environment commentary mentioned by the GP.
+<document_metadata>
+Name: {document_name}
+Type: Quarterly Report
+</document_metadata>
 
-Strict Requirements:
-- MAXIMUM 200 words - be extremely concise
-- Extract ONLY factual macroeconomic information explicitly stated in the report
-- Include only: GDP trends, inflation, interest rates, market conditions, economic outlook, regulatory changes
-- Do NOT include: fund performance, portfolio updates, company-specific information, or investment strategies
-- Use exact language/data from the report - no external interpretation
-- If no macroeconomic information is found, respond with exactly "NA"
-
-Document: {document_name}
-
-Document content:
+<quarterly_report>
 {document_content}
+</quarterly_report>
+
+INSTRUCTIONS:
+
+1. Scan for sections explicitly dedicated to market/industry commentary such as:
+   - "Market Commentary" / "Macroeconomic Update" / "Economic Overview"
+   - "Sector Overview" / "Industry Trends" / "Market Dynamics"
+   - "Healthcare Market Update" / "Tech Sector Outlook" (or any sector-specific commentary)
+   - "Investment Environment" / "Market Perspective"
+
+2. If NO such dedicated sections exist: Output only "NA"
+
+3. If dedicated commentary sections exist: Extract and summarize in 200 words or fewer
+
+EXTRACTION RULES:
+- ONLY use information from dedicated market/sector commentary sections
+- IGNORE insights embedded in individual portfolio company updates
+- Include both macro AND sector-specific trends when present
+- Focus on: economic indicators, sector trends, industry dynamics, regulatory changes, market opportunities/challenges, competitive landscape shifts
+- Use direct language from the report
+
+OUTPUT RULES:
+- Provide ONLY the summary or "NA"
+- Do NOT explain your reasoning or process
+- Maximum 200 words (strictly enforced)
+- Combine macro and sector insights into one cohesive summary
+
+<market_commentary_summary>
+[Output only your summary here, or "NA" if no dedicated sections exist]
+</market_commentary_summary>
